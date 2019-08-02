@@ -52,6 +52,7 @@ void ofApp::draw(){
 	renderFBOSmall.end();
 
 	renderFBOSmall.draw(0, 0, ofGetWidth(), ofGetHeight());
+	ofSaveFrame();
 	//for (int i = 0; i < NUM_MAGNETS; i++) {
 	//	
 	//	ofSetColor(ofColor(magnets[i].color.r * 255, magnets[i].color.g * 255, magnets[i].color.g * 255));
@@ -66,7 +67,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::reset() {
 	for (int i = 0; i < NUM_MAGNETS; i++) {
-		magnets[i].location = glm::vec2(ofRandom(ofGetWidth() * resolution), ofGetHeight() * resolution);
+		magnets[i].location = glm::vec2(ofRandom(ofGetWidth() * resolution), ofRandom(ofGetHeight() * resolution));
 		magnets[i].velocity = glm::vec2(ofRandom(-1.0, 1.0), ofRandom(-1.0, 1.0));
 		magnets[i].color = glm::vec3(ofRandom(1.0), ofRandom(1.0), ofRandom(1.0));
 		magnets[i].size = ofRandom(2, 8);

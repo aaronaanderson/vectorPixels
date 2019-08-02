@@ -51,14 +51,14 @@ void main(){
     //         minDist = dist;
     //     }
     // }
-    
+    int cycles = 0;
     for(int i = 0; i < maxIterations; i++){
         seekerLocation += seekerVelocity;//apply the velocity to the location
         
         //check for collision with magnet
-        for(int i = 0; i < magnets.length(); i++){
-            if(distance(magnets[i].location, seekerLocation) < magnets[i].size){
-                magnetCollisionIndex = i;
+        for(int j = 0; j < magnets.length(); j++){
+            if(distance(magnets[j].location, seekerLocation) < magnets[j].size){
+                magnetCollisionIndex = j;
                 collidedWithMagnet = true;
                 break;
             }
@@ -67,21 +67,34 @@ void main(){
             break;
 
         //update velocity
-        for(int i = 0; i < magnets.length(); i++){
-            desiredVelocity += (((magnets[i].location - seekerLocation)*magnets[i].size) / 
-            pow((distance(magnets[i].location, seekerLocation)+1), 2));
+        for(int j = 0; j < magnets.length(); j++){
+            desiredVelocity += (((magnets[j].location - seekerLocation)*magnets[j].size) / 
+            pow((distance(magnets[j].location, seekerLocation)+1), 2));
         }
         //seekerVelocity = desiredVelocity - seekerPreviousVelocity;
         seekerVelocity = limitVector(desiredVelocity, maxSpeed);
         seekerPreviousVelocity = seekerVelocity;
         //seekerVelocity = max(seekerVelocity, seekerPreviousVelocity)
         //velocity will be updated one extra time than it needs to TODO fix this
-
+        cycles++;
     }
 
     vec4 c = vec4(0.0, 0.0, 0.0, 1.0);
-    if(magnetCollisionIndex > -1){
-      c = vec4(magnets[magnetCollisionIndex].color, 1.0);
+    if(cycles < maxIterations){
+        float brightness = 1.0 - cycles/float(maxIterations);
+        int threshold = int(maxIterations * 0.01);
+        if(cycles < threshold){
+            c = vec4(magnets[magnetCollisionIndex].color * brightness, 1.0);
+        }else{
+            c = vec4(magnets[magnetCollisionIndex].color * brightness, 1.0 - (cycles-threshold)/float(maxIterations - threshold));
+        }
     }
+
+    // if(cycles < maxIterations){
+    //     float brightness = 1.0 - cycles/float(maxIterations);
+    //     c = vec4(magnets[magnetCollisionIndex].color * brightness, min(brightness, 0.35));
+    
+    // }
+
     outputColor = c;
 }
